@@ -4,8 +4,9 @@ import Loading from './Loading';
 import * as Location from 'expo-location';
 import axios from 'axios'
 import API_KEY from './API_KEY.json'
+import Weather from "./Weather";
 
-const APPID = API_KEY.openWeather; // https://openweathermap.org/ 로그인해서 API Key 넣으면 됨
+const APP_ID = API_KEY.openWeather; // https://openweathermap.org/ 로그인해서 API Key 넣으면 됨
 
 export default class extends React.Component {
   state = {
@@ -13,9 +14,22 @@ export default class extends React.Component {
   };
 
   getWeather = async (latitude, longitude) => {
-    const url = `http://api.openweathermap.org/data/2.5/weather?appid=${APPID}&units=metric&&lat=${latitude}&lon=${longitude}`;
-    const { data } = await axios.get(url);
-    console.log(data);
+    const url = `http://api.openweathermap.org/data/2.5/weather?appid=${APP_ID}&units=metric&&lat=${latitude}&lon=${longitude}`;
+    const {
+      data: {
+        main : {temp},
+        weather,
+        name
+      }
+    } = await axios.get(url); // 결과값 문서 : https://openweathermap.org/weather-conditions
+    //console.log(data);
+
+    this.setState({
+      isLoading: false,
+      temperature: temp,
+      condition: weather[0].main,
+      location: name,
+    });
   }
 
   getLocation = async() => {
@@ -28,7 +42,6 @@ export default class extends React.Component {
       } = location;
 
       this.getWeather(latitude, longitude);
-      this.setState({ isLoading: false });
     } catch (e) {
       Alert.alert("위치를 찾지 못하였습니다.", "흑흑");
     }
@@ -37,10 +50,15 @@ export default class extends React.Component {
   componentDidMount() {
     this.getLocation();
   }
-
   render() {
-    const {isLoading} = this.state;
-    return <Loading/>;
+    const {isLoading, temperature, condition, location} = this.state;
+    return isLoading ?
+        <Loading/> :
+        <Weather
+            temperature={Math.round(temperature)}
+            condition={condition}
+            location={location}
+        />;
   }
 
 }
