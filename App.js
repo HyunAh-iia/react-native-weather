@@ -7,6 +7,7 @@ import API_KEY from './API_KEY.json'
 import Weather from "./Weather";
 
 const APP_ID = API_KEY.openWeather; // https://openweathermap.org/ 로그인해서 API Key 넣으면 됨
+// const APP_ID = "키값을 바로 넣어도 되긴 함";
 
 export default class extends React.Component {
   state = {
