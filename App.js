@@ -21,7 +21,7 @@ export default class extends React.Component {
         weather,
         name
       }
-    } = await axios.get(url); // 결과값 문서 : https://openweathermap.org/weather-conditions
+    } = await axios.get(url);
     //console.log(data);
 
     this.setState({
@@ -56,7 +56,7 @@ export default class extends React.Component {
         <Loading/> :
         <Weather
             temperature={Math.round(temperature)}
-            condition={condition}
+            condition="Clouds"//{condition}
             location={location}
         />;
   }
